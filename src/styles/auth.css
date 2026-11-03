@@ -1,0 +1,261 @@
+/* ---------- Page background ---------- */
+.auth-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(27, 107, 63, 0.18), transparent 38%),
+    radial-gradient(circle at 88% 82%, rgba(27, 107, 63, 0.20), transparent 40%),
+    radial-gradient(rgba(27, 107, 63, 0.14) 1.2px, transparent 1.2px) 0 0 / 24px 24px,
+    var(--bg);
+}
+
+/* faded campus building at the bottom */
+.auth-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url('../assets/campus-bg.jpg') center bottom / cover no-repeat;
+  opacity: 0.16;
+  filter: grayscale(1);
+  -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 75%);
+          mask-image: linear-gradient(to top, #000 10%, transparent 75%);
+}
+
+/* big faded IGDTUW text */
+.auth-watermark {
+  position: absolute;
+  left: 50%;
+  bottom: -3vw;
+  transform: translateX(-50%);
+  z-index: 0;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 700;
+  font-size: 20vw;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--green-900);
+  opacity: 0.05;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.auth-wave {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 140px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ---------- Floating chips ---------- */
+.chip {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 10px 10px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--green-900);
+  box-shadow: 0 6px 18px rgba(15, 74, 44, 0.12);
+  animation: float 6s ease-in-out infinite;
+}
+.chip-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--green-100);
+  color: var(--green-700);
+  display: grid;
+  place-items: center;
+}
+.chip-1 { top: 24%; left: 6%; }
+.chip-2 { top: 46%; left: 12%; animation-delay: -2s; }
+.chip-3 { top: 68%; left: 5%; animation-delay: -4s; }
+.chip-4 { top: 22%; right: 6%; animation-delay: -1s; }
+.chip-5 { top: 46%; right: 11%; animation-delay: -3s; }
+.chip-6 { top: 68%; right: 5%; animation-delay: -5s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chip { animation: none; }
+}
+
+/* ---------- Centered card ---------- */
+.auth-main {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 8px 20px 40px;
+}
+.auth-box {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 440px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 36px 40px;
+  box-shadow: 0 20px 50px rgba(15, 74, 44, 0.15);
+}
+.auth-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--green-900), var(--green-700), #7fc08f);
+}
+
+/* ---------- Form ---------- */
+.auth-card { width: 100%; }
+.auth-card h1 {
+  font-family: 'Source Serif 4', serif;
+  font-size: 32px;
+  color: var(--green-900);
+  margin-bottom: 6px;
+  text-align: center;
+}
+.auth-sub {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.field { margin-bottom: 16px; }
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.input-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: #fff;
+  border: 1.5px solid #cfdcd2;
+  border-radius: 10px;
+  color: var(--muted);
+}
+.input-box:focus-within {
+  border-color: var(--green-700);
+  box-shadow: 0 0 0 3px rgba(27, 107, 63, 0.15);
+}
+.input-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 13px 0;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+}
+.eye-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+}
+
+.submit-btn {
+  width: 100%;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  padding: 13px;
+  font-size: 15px;
+  margin-top: 6px;
+}
+
+.error-msg {
+  background: #fdeaea;
+  color: #a12a2a;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.auth-switch a {
+  color: var(--green-700);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ---------- Smaller screens ---------- */
+@media (max-width: 1000px) {
+  .chip { display: none; }
+}
+@media (max-width: 900px) {
+  .auth-box { padding: 28px 22px; }
+  .auth-watermark { font-size: 30vw; }
+}
+
+/* ---------- Student / Admin toggle ---------- */
+.role-toggle {
+  display: flex;
+  background: var(--green-100);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 22px;
+}
+.role-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.role-btn.active {
+  background: #fff;
+  color: var(--green-900);
+  box-shadow: 0 2px 8px rgba(15, 74, 44, 0.15);
+}
+
+.admin-note {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--muted);
+}

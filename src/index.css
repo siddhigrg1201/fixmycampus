@@ -1,0 +1,16 @@
+:root {
+  --green-900: #0f4a2c;
+  --green-700: #1b6b3f;
+  --green-100: #e3f0e6;
+  --bg: #f4f9f5;
+  --text: #1f2d24;
+  --muted: #55645a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
