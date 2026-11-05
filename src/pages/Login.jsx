@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, GraduationCap, ShieldCheck } from 'lucide-react';
 import AuthLayout from '../components/AuthLayout';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [role, setRole] = useState('student'); // 'student' or 'admin'
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -30,10 +32,9 @@ export default function Login() {
       return;
     }
 
-    // TEMPORARY: replace this with the real API call once the backend is ready
-    console.log('Login data:', { ...form, role });
+        // TEMPORARY: replace this with the real API call once the backend is ready
+    login({ email: form.email, role });
     navigate('/');
-    // Later: navigate(isAdmin ? '/admin' : '/dashboard');
   };
 
   return (

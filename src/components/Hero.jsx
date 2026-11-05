@@ -2,8 +2,11 @@ import { Megaphone, ArrowRight, Leaf } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import student from '../assets/student.png';
 import FeatureStrip from './FeatureStrip';
+import { useAuth } from '../context/AuthContext';
 
 export default function Hero() {
+  const { user } = useAuth();
+
   return (
     <section className="hero">
       <div className="hero-text">
@@ -15,10 +18,12 @@ export default function Hero() {
           status and help build a better campus together.
         </p>
         <div className="hero-buttons">
-          <Link to="/report" className="btn btn-solid">
+          <Link to={user ? '/report' : '/login'} className="btn btn-solid">
             <Megaphone size={16} /> Report an Issue <ArrowRight size={16} />
           </Link>
-          <Link to="/track" className="btn btn-outline">Track Your Complaints</Link>
+          <Link to={user ? '/track' : '/login'} className="btn btn-outline">
+            Track Your Complaints
+          </Link>
         </div>
       </div>
 
