@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, GraduationCap, ShieldCheck } from 'lucide-react';
 import AuthLayout from '../components/AuthLayout';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
-  const navigate = useNavigate();
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const [role, setRole] = useState('student'); // 'student' or 'admin'
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -32,10 +31,17 @@ export default function Login() {
       return;
     }
 
-        // TEMPORARY: replace this with the real API call once the backend is ready
-    login({ email: form.email, role });
-    navigate(result.user.role === 'student' ? '/complaints' : '/');
+    const result = login({ email: form.email, password: form.password, role });
+    if (!result.ok) {
+      setError(result.error);
+    }
+    // on success, `user` is set and the redirect below takes over
   };
+
+  // Already logged in (or just logged in): go to the right page
+  if (user) {
+    return <Navigate to={user.role === 'student' ? '/complaints' : '/'} replace />;
+  }
 
   return (
     <AuthLayout>

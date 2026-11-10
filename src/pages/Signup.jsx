@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import AuthLayout from '../components/AuthLayout';
+import { useAuth } from '../context/AuthContext';
 
 export default function Signup() {
-  const navigate = useNavigate();
+  const { user, signup } = useAuth();
   const [form, setForm] = useState({
     name: '', email: '', password: '', confirmPassword: '',
   });
@@ -32,10 +33,21 @@ export default function Signup() {
       return;
     }
 
-    // TEMPORARY: replace this with the real API call once the backend is ready
-    console.log('Signup data:', form);
-    navigate('/login');
+    const result = signup({
+      name: form.name,
+      email: form.email,
+      password: form.password,
+    });
+    if (!result.ok) {
+      setError(result.error);
+    }
+    // on success, the new student is logged in and the redirect below takes over
   };
+
+  // Already logged in (or just signed up): go to the right page
+  if (user) {
+    return <Navigate to={user.role === 'student' ? '/complaints' : '/'} replace />;
+  }
 
   return (
     <AuthLayout>
