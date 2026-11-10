@@ -25,11 +25,12 @@ export default function Navbar() {
       {user ? (
         <>
           <nav className="nav-links">
-            <NavLink to="/">Home</NavLink>
-            <NavLink to="/report">Report Issue</NavLink>
-            <NavLink to="/track">Track Complaints</NavLink>
-            <NavLink to="/about">About</NavLink>
-            <NavLink to="/contact">Contact</NavLink>
+            {user.role === 'student' && (
+              <>
+                <NavLink to="/complaints">All Complaints</NavLink>
+                <NavLink to="/my-complaints">My Complaints</NavLink>
+              </>
+            )}
           </nav>
 
           <div className="nav-actions">

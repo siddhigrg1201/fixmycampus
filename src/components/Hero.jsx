@@ -18,10 +18,10 @@ export default function Hero() {
           status and help build a better campus together.
         </p>
         <div className="hero-buttons">
-          <Link to={user ? '/report' : '/login'} className="btn btn-solid">
+          <Link to={user ? '/complaints' : '/login'} className="btn btn-solid">
             <Megaphone size={16} /> Report an Issue <ArrowRight size={16} />
           </Link>
-          <Link to={user ? '/track' : '/login'} className="btn btn-outline">
+          <Link to={user ? '/my-complaints' : '/login'} className="btn btn-outline">
             Track Your Complaints
           </Link>
         </div>

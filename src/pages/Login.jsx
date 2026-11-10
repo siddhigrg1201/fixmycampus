@@ -34,7 +34,7 @@ export default function Login() {
 
         // TEMPORARY: replace this with the real API call once the backend is ready
     login({ email: form.email, role });
-    navigate('/');
+    navigate(result.user.role === 'student' ? '/complaints' : '/');
   };
 
   return (
