@@ -7,7 +7,7 @@ const ADMIN = {
   id: 'admin-1',
   name: 'Campus Admin',
   email: 'admin@fixmycampus.com',
-  password: 'admin123',
+  password: 'Fmc#Admin2026!',
   role: 'admin',
 };
 

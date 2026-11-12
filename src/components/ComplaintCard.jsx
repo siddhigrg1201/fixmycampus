@@ -1,7 +1,7 @@
 import { Building2, Layers, DoorOpen, User } from 'lucide-react';
 import { PRIORITY_LABELS, STATUS_LABELS } from '../constants.js';
 
-export default function ComplaintCard({ complaint, mine = false }) {
+export default function ComplaintCard({ complaint, mine = false, admin = false }) {
   const {
     title, department, floor, room, priority,
     status, image, anonymous, reporterName, createdAt,
@@ -11,8 +11,10 @@ export default function ComplaintCard({ complaint, mine = false }) {
     day: 'numeric', month: 'short', year: 'numeric',
   });
 
-  let reporter;
-  if (mine) {
+    let reporter;
+  if (admin) {
+    reporter = anonymous ? `${reporterName} (hidden from students)` : reporterName;
+  } else if (mine) {
     reporter = anonymous ? 'Posted anonymously' : 'Posted by you';
   } else {
     reporter = anonymous ? 'Anonymous' : reporterName;

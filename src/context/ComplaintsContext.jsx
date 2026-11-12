@@ -70,8 +70,19 @@ export function ComplaintsProvider({ children }) {
     return { ok: true };
   };
 
+  // Used by the admin to change priority / status
+  const updateComplaint = (id, changes) => {
+    const updated = complaints.map((c) => (c.id === id ? { ...c, ...changes } : c));
+    setComplaints(updated);
+    try {
+      localStorage.setItem(KEY, JSON.stringify(updated));
+    } catch {
+      // storage full: the change still shows until the page is refreshed
+    }
+  };
+
   return (
-    <ComplaintsContext.Provider value={{ complaints, addComplaint }}>
+    <ComplaintsContext.Provider value={{ complaints, addComplaint, updateComplaint }}>
       {children}
     </ComplaintsContext.Provider>
   );

@@ -46,7 +46,7 @@ export default function Signup() {
 
   // Already logged in (or just signed up): go to the right page
   if (user) {
-    return <Navigate to={user.role === 'student' ? '/complaints' : '/'} replace />;
+        return <Navigate to="/complaints" replace />;
   }
 
   return (

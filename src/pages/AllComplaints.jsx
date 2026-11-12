@@ -3,13 +3,17 @@ import { Plus } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import ComplaintCard from '../components/ComplaintCard';
 import ComplaintModal from '../components/ComplaintModal';
+import { useAuth } from '../context/AuthContext';
 import { useComplaints } from '../context/ComplaintsContext';
 import { PRIORITY_ORDER } from '../constants';
 import '../styles/complaints.css';
 
 export default function AllComplaints() {
+  const { user } = useAuth();
   const { complaints } = useComplaints();
   const [open, setOpen] = useState(false);
+
+  const isAdmin = user.role === 'admin';
 
   // High -> Medium -> Low -> (priority not set yet). Newest first within each group.
   const sorted = [...complaints].sort((a, b) => {
@@ -29,7 +33,11 @@ export default function AllComplaints() {
         </div>
 
         {sorted.length === 0 ? (
-          <div className="empty">No complaints yet. Tap the + button to report one.</div>
+          <div className="empty">
+            {isAdmin
+              ? 'No complaints have been reported yet.'
+              : 'No complaints yet. Tap the + button to report one.'}
+          </div>
         ) : (
           <div className="cards-grid">
             {sorted.map((c) => <ComplaintCard key={c.id} complaint={c} />)}
@@ -37,11 +45,18 @@ export default function AllComplaints() {
         )}
       </main>
 
-      <button className="fab" onClick={() => setOpen(true)} aria-label="Report an issue" title="Report an issue">
-        <Plus size={28} />
-      </button>
+      {!isAdmin && (
+        <button
+          className="fab"
+          onClick={() => setOpen(true)}
+          aria-label="Report an issue"
+          title="Report an issue"
+        >
+          <Plus size={28} />
+        </button>
+      )}
 
-      {open && <ComplaintModal onClose={() => setOpen(false)} />}
+      {open && !isAdmin && <ComplaintModal onClose={() => setOpen(false)} />}
     </>
   );
 }

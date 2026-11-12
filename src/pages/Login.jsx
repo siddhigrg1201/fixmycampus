@@ -40,7 +40,7 @@ export default function Login() {
 
   // Already logged in (or just logged in): go to the right page
   if (user) {
-    return <Navigate to={user.role === 'student' ? '/complaints' : '/'} replace />;
+        return <Navigate to="/complaints" replace />;
   }
 
   return (

@@ -25,10 +25,16 @@ export default function Navbar() {
       {user ? (
         <>
           <nav className="nav-links">
+            <NavLink to="/complaints">All Complaints</NavLink>
+
             {user.role === 'student' && (
+              <NavLink to="/my-complaints">My Complaints</NavLink>
+            )}
+
+            {user.role === 'admin' && (
               <>
-                <NavLink to="/complaints">All Complaints</NavLink>
-                <NavLink to="/my-complaints">My Complaints</NavLink>
+                <NavLink to="/admin/manage">Manage Complaints</NavLink>
+                <NavLink to="/admin/analytics">Analytics</NavLink>
               </>
             )}
           </nav>
