@@ -1,0 +1,141 @@
+.an-note {
+  margin-top: 22px;
+  padding: 12px 16px;
+  background: #fdecc8;
+  color: #8a4f00;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.an-note a { color: #8a4f00; text-decoration: underline; }
+
+/* ---------- Stat cards ---------- */
+.an-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+.an-stat {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px 20px;
+  box-shadow: 0 6px 20px rgba(15, 74, 44, 0.08);
+}
+.an-stat b {
+  display: block;
+  font-family: 'Source Serif 4', serif;
+  font-size: 34px;
+  color: var(--green-900);
+}
+.an-stat span { font-size: 13px; color: var(--muted); }
+.an-stat small { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+.an-stat.warn b { color: #c27803; }
+.an-stat.danger b { color: #d92d20; }
+
+/* ---------- "Solve this first" ---------- */
+.an-spot {
+  margin-top: 24px;
+  padding: 22px 26px;
+  background: linear-gradient(135deg, #fff, #fff4f4);
+  border: 1.5px solid #f4b4b6;
+  border-left: 6px solid #e5484d;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(217, 45, 32, 0.08);
+}
+.an-spot.clear {
+  background: linear-gradient(135deg, #fff, #f0f9f3);
+  border-color: #b9dfc6;
+  border-left-color: #3aa76d;
+}
+.an-spot-tag {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d92d20;
+}
+.an-spot.clear .an-spot-tag { color: #15663a; }
+.an-spot-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.an-spot h2 {
+  font-family: 'Source Serif 4', serif;
+  font-size: 26px;
+  color: var(--green-900);
+  margin: 10px 0 12px;
+}
+.an-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.an-overdue { background: #d92d20; color: #fff; }
+
+/* ---------- Chart cards ---------- */
+.an-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 24px;
+}
+.an-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 6px 20px rgba(15, 74, 44, 0.08);
+}
+.an-card h3 {
+  font-family: 'Source Serif 4', serif;
+  font-size: 21px;
+  color: var(--green-900);
+}
+.an-sub { font-size: 13px; color: var(--muted); margin: 4px 0 18px; }
+
+/* bars */
+.bar-row {
+  display: grid;
+  grid-template-columns: 150px 1fr 30px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.bar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { height: 12px; background: #eef2ef; border-radius: 999px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 999px; transition: width 0.4s; }
+.bar-value { text-align: right; font-weight: 700; }
+
+/* donut */
+.donut-wrap { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+.donut { width: 180px; height: 180px; }
+.donut-total { font-family: 'Source Serif 4', serif; font-size: 36px; font-weight: 700; fill: var(--green-900); }
+.donut-caption { font-size: 12px; fill: var(--muted); }
+.legend { list-style: none; display: grid; gap: 12px; font-size: 14px; }
+.legend li { display: flex; align-items: center; gap: 10px; }
+.legend b { margin-left: 6px; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+/* up next */
+.next-list { list-style: none; }
+.next-list li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 11px 0;
+  border-bottom: 1px dashed #dbe5de;
+}
+.next-list li:last-child { border-bottom: none; }
+.next-dot { width: 11px; height: 11px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; background: #94a3ab; }
+.next-dot.high { background: #e5484d; }
+.next-dot.medium { background: #f5a524; }
+.next-dot.low { background: #3aa76d; }
+.next-title { font-size: 14px; font-weight: 600; }
+.next-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.next-overdue { color: #d92d20; }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 900px) {
+  .an-grid { grid-template-columns: 1fr; }
+  .an-spot-body { flex-direction: column; align-items: flex-start; }
+  .bar-row { grid-template-columns: 110px 1fr 28px; }
+}
