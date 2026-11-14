@@ -22,7 +22,7 @@ export default function Login() {
     setError('');
   };
 
-  const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -31,7 +31,7 @@ export default function Login() {
       return;
     }
 
-    const result = login({ email: form.email, password: form.password, role });
+    const result = await login({ email: form.email, password: form.password, role });
     if (!result.ok) {
       setError(result.error);
     }

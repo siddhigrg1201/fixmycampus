@@ -16,7 +16,7 @@ export default function Signup() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -33,7 +33,7 @@ export default function Signup() {
       return;
     }
 
-    const result = signup({
+      const result = await signup({
       name: form.name,
       email: form.email,
       password: form.password,
