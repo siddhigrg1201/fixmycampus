@@ -54,7 +54,7 @@ export default function ComplaintModal({ onClose }) {
     }
   };
 
-  const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -71,7 +71,7 @@ export default function ComplaintModal({ onClose }) {
       return;
     }
 
-    const result = addComplaint({
+      const result = await addComplaint({
       title: form.title.trim(),
       department: form.department,
       floor: form.floor,

@@ -1,88 +1,114 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { supabase } from '../lib/supabaseClient';
+import { useAuth } from './AuthContext';
 
 const ComplaintsContext = createContext(null);
-const KEY = 'fmc_complaints';
 
-// Sample complaints so the page isn't empty. Remove when the backend is connected.
-const SEED = [
-  {
-    id: 'seed-1', title: 'Water cooler leaking continuously',
-    department: 'Applied Sciences', floor: '2nd floor', room: '',
-    priority: 'high', status: 'in-progress', image: null, anonymous: false,
-    reportedBy: 'seed-user', reporterName: 'Ananya', createdAt: '2026-10-30T09:00:00.000Z',
-  },
-  {
-    id: 'seed-2', title: 'Exposed electrical wiring near the stairs',
-    department: 'Computer Science & Engineering', floor: '1st floor', room: 'Room 112',
-    priority: 'high', status: 'pending', image: null, anonymous: true,
-    reportedBy: 'seed-user', reporterName: 'Riya', createdAt: '2026-11-01T11:30:00.000Z',
-  },
-  {
-    id: 'seed-3', title: 'Ceiling fan not working',
-    department: 'Information Technology', floor: '3rd floor', room: 'Room 304',
-    priority: 'medium', status: 'pending', image: null, anonymous: false,
-    reportedBy: 'seed-user', reporterName: 'Simran', createdAt: '2026-10-29T14:15:00.000Z',
-  },
-  {
-    id: 'seed-4', title: 'Broken chairs in the reading room',
-    department: 'Library', floor: 'Ground floor', room: '',
-    priority: 'medium', status: 'resolved', image: null, anonymous: false,
-    reportedBy: 'seed-user', reporterName: 'Kavya', createdAt: '2026-10-20T10:00:00.000Z',
-  },
-  {
-    id: 'seed-5', title: 'Damaged notice board',
-    department: 'Administrative Block', floor: '1st floor', room: '',
-    priority: 'low', status: 'pending', image: null, anonymous: false,
-    reportedBy: 'seed-user', reporterName: 'Meera', createdAt: '2026-10-25T16:45:00.000Z',
-  },
-];
-
-function load() {
-  try {
-    const saved = localStorage.getItem(KEY);
-    if (saved) return JSON.parse(saved);
-  } catch {
-    // ignore and fall back to sample data
-  }
-  return SEED;
-}
+// database row -> the shape your pages already use
+const toComplaint = (row) => ({
+  id: row.id,
+  title: row.title,
+  department: row.department,
+  floor: row.floor,
+  room: row.room || '',
+  priority: row.priority,
+  status: row.status,
+  image: row.image_url,
+  anonymous: row.anonymous,
+  reportedBy: row.reported_by,
+  reporterName: row.reporter_name,
+  createdAt: row.created_at,
+});
 
 export function ComplaintsProvider({ children }) {
-  const [complaints, setComplaints] = useState(load);
+  const { user } = useAuth();
+  const [complaints, setComplaints] = useState([]);
+  const uid = user?.id;
+
+  const load = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('complaints')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Could not load complaints:', error);
+      return;
+    }
+    setComplaints(data.map(toComplaint));
+  }, []);
+
+  // Load once, then reload whenever anyone changes a complaint
+  useEffect(() => {
+    if (!uid) return;
+
+    load();
+
+    const channel = supabase
+      .channel('complaints-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'complaints' }, () => load())
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [uid, load]);
 
   // New complaints start as "pending" with no priority (the admin sets it later)
-  const addComplaint = (data) => {
-    const newComplaint = {
-      id: 'c-' + Date.now(),
-      ...data,
-      priority: null,
-      status: 'pending',
-      createdAt: new Date().toISOString(),
-    };
-    const updated = [newComplaint, ...complaints];
-
+  const addComplaint = async (data) => {
     try {
-      localStorage.setItem(KEY, JSON.stringify(updated));
-    } catch {
-      return { ok: false, error: 'Could not save the complaint. The image may be too large.' };
+      let imageUrl = null;
+
+      if (data.image) {
+        const blob = await (await fetch(data.image)).blob();
+        const path = `${data.reportedBy}/${Date.now()}.jpg`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('complaint-images')
+          .upload(path, blob, { contentType: 'image/jpeg' });
+        if (uploadError) throw uploadError;
+
+        imageUrl = supabase.storage.from('complaint-images').getPublicUrl(path).data.publicUrl;
+      }
+
+      const { error } = await supabase.from('complaints').insert({
+        title: data.title,
+        department: data.department,
+        floor: data.floor,
+        room: data.room || '',
+        anonymous: data.anonymous,
+        image_url: imageUrl,
+        reported_by: data.reportedBy,
+        // anonymous complaints never store the student's name
+        reporter_name: data.anonymous ? 'Anonymous' : data.reporterName,
+      });
+      if (error) throw error;
+
+      await load();
+      return { ok: true };
+    } catch (err) {
+      console.error(err);
+      return { ok: false, error: 'Could not submit the complaint. Please try again.' };
     }
-    setComplaints(updated);
-    return { ok: true };
   };
 
   // Used by the admin to change priority / status
-  const updateComplaint = (id, changes) => {
-    const updated = complaints.map((c) => (c.id === id ? { ...c, ...changes } : c));
-    setComplaints(updated);
-    try {
-      localStorage.setItem(KEY, JSON.stringify(updated));
-    } catch {
-      // storage full: the change still shows until the page is refreshed
+  const updateComplaint = async (id, changes) => {
+    // show the change straight away, then save it
+    setComplaints((prev) => prev.map((c) => (c.id === id ? { ...c, ...changes } : c)));
+
+    const { error } = await supabase.from('complaints').update(changes).eq('id', id);
+    if (error) {
+      console.error(error);
+      alert('Could not update the complaint. Please try again.');
+      await load();
     }
   };
 
   return (
-    <ComplaintsContext.Provider value={{ complaints, addComplaint, updateComplaint }}>
+    <ComplaintsContext.Provider
+      value={{ complaints: user ? complaints : [], addComplaint, updateComplaint }}
+    >
       {children}
     </ComplaintsContext.Provider>
   );
